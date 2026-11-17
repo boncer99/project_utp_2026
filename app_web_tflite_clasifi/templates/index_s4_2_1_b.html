@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaf Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Leaf Disease Classifier</h1>
+    </header>
+
+    <div class="container">
+        <form action="/" method="POST" enctype="multipart/form-data" class="upload-form">
+            <label for="image-upload">Select an image:</label><br>
+            <input type="file" id="image-upload" name="image" accept="image/*" required>
+            <button type="submit" name="action" value="classify">Classify</button>
+        </form>
+
+        {% if image_data %}
+        <div class="results-layout">
+            <!-- Imagen a la izquierda -->
+            <div class="image-box">
+                <h3>Uploaded Image:</h3>
+                <img src="data:image/jpeg;base64,{{ image_data }}" class="preview-img">
+            </div>
+
+            <!-- Resultados y diagnóstico a la derecha -->
+            <div class="text-boxes">
+                {% if result %}
+                    <div class="result-box">
+                        <h2>Prediction: {{ result }}</h2>
+                        <ul>
+                            {% for label, score in scores %}
+                                <li>{{ label }} : {{ '%.2f'|format(score) }}%</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if diagnostico %}
+                    <div class="diagnostic-box">
+                        <h2>Possible Disease</h2>
+                        <p>{{ diagnostico }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>© 2025 Leaf AI Project</p>
+    </footer>
+</body>
+</html>

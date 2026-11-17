@@ -1,0 +1,4 @@
+healthy
+Early_blight
+Leaf_Mold
+Late_blight

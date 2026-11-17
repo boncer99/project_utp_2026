@@ -1,0 +1,32 @@
+# --- OS / editors ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# --- Android Studio / Gradle ---
+.gradle/
+build/
+local.properties
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+
+# --- Secrets (never commit) ---
+.env
+*.env
+*.pem
+*.key
+credentials*.json

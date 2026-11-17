@@ -1,0 +1,806 @@
+{
+  "name": "ProyectoFinal_6junio",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "6c9e2bdc-bfa4-4e1a-a388-d0ff5abdf885",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        240
+      ],
+      "id": "9e54aff9-7cca-4b3b-a974-ad15ad276a51",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "umoUWhsT2KEhxhGw",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        432
+      ],
+      "id": "6ef171a6-da1a-4aa9-9ab2-3f83e313a928",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        432
+      ],
+      "id": "0ce492da-5197-4a2e-9643-573c880c2e4a",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KLBLYgG84I1CCEiK",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente especializado en enfermedades del tomate.\n\nOBLIGATORIAMENTE sigue estos pasos:\n1. Consulta la herramienta \"Supabase Vector Store1\" utilizando el valor {{ $('Webhook').item.json.query.estado_hoja }}\n2. Utiliza únicamente la información recuperada.\n3. Extrae:\n- descripcion\n- tratamiento\n\n4. Finalmente Devuelve únicamente el siguiente JSON:\n{\n  \"descripcion\": \"...\",\n  \"tratamiento\": \"...\"\n}\n\nReglas:\n- No inventes información.\n- No agregues conocimientos propios.\n- Si la herramienta no devuelve información escribe \"No disponible\".\n- No hagas recomendaciones adicionales.\n- No uses markdown.\n- No escribas explicaciones.\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -240,
+        -320
+      ],
+      "id": "9faa7332-f342-4e3f-ada9-654441d75f5a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Esta herramienta se utiliza para consultar las enfermedades presentes en las hojas de tomate y revisar tratamientos disponibles ",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        -192
+      ],
+      "id": "f751d9a7-4030-4ad0-bb8c-32c809ddd84d",
+      "name": "Supabase Vector Store1",
+      "notesInFlow": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "umoUWhsT2KEhxhGw",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -96
+      ],
+      "id": "2a23010d-3db2-432b-b2bf-6a631c2ac8e4",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KLBLYgG84I1CCEiK",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyWeek"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1IYvVENqI3sXbDotboYeBxQrHyDINfqyU",
+          "mode": "list",
+          "cachedResultName": "ProyectoMonitor",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1IYvVENqI3sXbDotboYeBxQrHyDINfqyU"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        32,
+        416
+      ],
+      "id": "59dfc1f3-664e-439a-a671-361410106d9c",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "4glHOHgzK9VuSpyB",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        144,
+        240
+      ],
+      "id": "0d1982fa-24e2-4c80-a8a9-4e68a79f958b",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "4glHOHgzK9VuSpyB",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "c046fdb3-9975-4c37-a7c7-2731ba93db13",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -592,
+        -448
+      ],
+      "id": "08d56394-4027-40d5-b30f-3e8cdbdd2887",
+      "name": "Webhook",
+      "webhookId": "c046fdb3-9975-4c37-a7c7-2731ba93db13"
+    },
+    {
+      "parameters": {
+        "chatId": "1431584814",
+        "text": "={{ $json.mensaje_humano }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        -336
+      ],
+      "id": "9758fd4c-48cc-48ad-8d24-061643cace8e",
+      "name": "Send a text message",
+      "webhookId": "32bf0db2-2979-4779-b24b-616f30b8d049",
+      "credentials": {
+        "telegramApi": {
+          "id": "iyB9mwSP8v6HrYAb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Proceso a automatizar\nEl proceso automatizado consiste en detectar el estado de la hoja (por ejemplo, presencia de Tomato Mosaic Virus), obtener informacion automática de una herramienta de acceso a documentos, tambien desde  Google Sheets.\n\nEsta información es ennviada al usuario usando la herramienta de GMAIL y envio de información por Telegram. El riesgo es bajo porque no afecta sistemas críticos ",
+        "height": 176,
+        "width": 736
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1072,
+        -800
+      ],
+      "typeVersion": 1,
+      "id": "a0a03541-18a0-46b4-9e75-52a3447e543a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Ejecución y explicación \n\n1. Este flujo en n8n inicia recibiendo datos ya sea desde un mensaje de chat (Telegram Trigger) o mediante un Webhook HTTP.  El uso de Webhook se debe a que la información es enviada por otros sistemas en campo que detectan el estado de hoja del tomate.\n\n2. Esa información es enviada al AI Agent, \n\n3. Primero, el agente consulta la herramienta Supabase Vector Store para generar una descripción resumida de la enfermedad detectada en la hoja (por ejemplo, estado_hoja) y una recomendación breve de tratamiento.\n\n4. Luego, utiliza la herramienta de Google Sheets para obtener los últimos tres registros almacenados y los incorpora directamente en la respuesta. \n\n5. Una vez obtenida toda la información (descripcion de enfermedad + tratamiento + registros recientes), el agente ejecuta la herramienta de Gmail para enviar un correo con un mensaje introductorio indicando que se ha detectado el estado de la hoja de cultivo y se adjunta la información correspondiente. \n\n6.Finalmente, el flujo también envía el mismo resumen mediante Telegram (Send a text message),",
+        "height": 448,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1408,
+        -560
+      ],
+      "typeVersion": 1,
+      "id": "b80494dd-f70b-4c0e-aedd-70894cf70347",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Flujo del agente y uso de componente\n\nEl flujo integra múltiples componentes:\n\nWebhook → AI Agent → Supebase → Google Sheets → Telegram.→ GMAIL.\n\nEl agente procesa la información, genera el diagnóstico, organiza los datos y activa acciones automáticas de notificación y almacenamiento. El flujo funciona de inicio a fin sin intervención manual.",
+        "height": 224,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1504,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "8cfe3127-95be-42c2-92be-bb550bf06cf6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Chat\nPermite iniciar el flujo automáticamente desde desde un mensaje de char recibiendo solamente el nombre del estado de la hoja"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        -736
+      ],
+      "typeVersion": 1,
+      "id": "141c1ed8-8ce7-490f-8fe7-8d77974f1c86",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Webhook\n Expone una URL pública para recibir parámetros.\nLos Datos enviados son desde otra app o sistema ",
+        "height": 144,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -976,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "a244d1ee-1126-42c0-82e9-c971355eea4f",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## AI AGENT\nAnaliza la entrada, decide qué herramientas usar y construye la respuesta final.\nLa entrada es estado_hoja o texto recibido por chat/webhook.\nla salida es respuesta resultante de la ejecución de herramientas (Supabase, Sheets, Gmail).\n",
+        "height": 208,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        -1024
+      ],
+      "typeVersion": 1,
+      "id": "6d08581e-e041-4341-8ff3-ef3c778941a8",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Tool 1: Supabase Vector Store\nBase de conocimiento documental sobre enfermedades.\nSe encarga de buscar información según estado_hoja usando embeddings.\nla salida es la descripción resumida + tratamiento en 1 oración cada uno.\n",
+        "height": 128,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1136,
+        -352
+      ],
+      "typeVersion": 1,
+      "id": "919ee74f-6568-438a-8b22-12a1816a19cc",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Tool 2: Get row(s) in sheet (Google Sheets)\n\nUtilidad: Obtener registros históricos almacenados y lee las últimas 3 filas del Excel.\nLa salida es los datos estructurados por ID, estado, confianza, fecha, y parametros ambientales\n",
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1200,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "72f44a91-8cfc-443b-937a-82c23dac909a",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Tool3: Send a message (Gmail)\nNotificación formal por correo electrónico. Envía email automático con diagnóstico completo.\n",
+        "height": 224,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "b8f2511f-362a-4411-96f4-a2378db99c08",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Send a text message (Telegram)\n Notificación inmediata al usuario enviando el Texto final generado por el agente.\n",
+        "height": 96,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1024,
+        -688
+      ],
+      "typeVersion": 1,
+      "id": "a0562388-b04b-4ba2-8629-485994fe27f9",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Almacenamiento de archivos en supabase\nEste flujo se activa automáticamente cada vez que se carga un nuevo archivo en Google Drive mediante el nodo Google Drive Trigger. \n\na) Una vez detectado el archivo, el nodo Download File lo descarga para su procesamiento interno\nb)  Luego, el documento es convertido en texto estructurado utilizando el Default Data Loader, permitiendo extraer su contenido legible. \nc) Posteriormente, el nodo Embeddings Google Gemini transforma ese texto en vectores numéricos. \nd)Finalmente, estos vectores junto con el contenido del documento se almacenan en Supabase Vector Store.\ne) cada nuevo archivo subido a Drive se indexa automáticamente y queda disponible para consultas  futuras.",
+        "height": 496,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "f3bed34b-6477-4e59-8820-e976391ef88e",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "## Google Drive Trigger\nEste nodo detecta automáticamente cuando se carga un nuevo archivo en una carpeta específica de Google Drive. ",
+        "height": 176,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -496,
+        592
+      ],
+      "typeVersion": 1,
+      "id": "41ab2ae2-0d55-4234-8207-a23df94a7119",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## Download File\nDescarga el archivo detectado desde Google Drive hacia el entorno de n8n para poder procesarlo internamente. ",
+        "height": 208,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "1c46eb7a-945f-45a0-a591-80ea79afc2ef",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "## Default Data Loader\nExtrae y convierte el contenido del archivo en texto estructurado. Este texto será utilizado para generar los embeddings semánticos.",
+        "height": 176,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        688
+      ],
+      "typeVersion": 1,
+      "id": "35868cd9-9389-4a21-b37c-e447b036def2",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## Supabase Vector Store\nAlmacena el texto original junto con sus embeddings en una base de datos vectorial. Esto permite que posteriormente el AI Agent consulte la información mediante búsquedas",
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "808146aa-ac06-4d3a-a7e6-36b5280bbf74",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "## Enlace video\nhttps://drive.google.com/drive/folders/161toEzbcIRXJ53boiVERFzcgxx_b4Eka?usp=sharing",
+        "height": 96,
+        "width": 896
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -992
+      ],
+      "typeVersion": 1,
+      "id": "591a62df-9e9a-43ae-bd30-474307352e80",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        512,
+        -496
+      ],
+      "id": "a7913a23-73e7-47fb-a661-2c9cf50490de",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "model": "qwen2.5:7b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -144
+      ],
+      "id": "795c1391-e832-45c6-9c87-7441842f2838",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "LUBXbZYZFMjAuTyu",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n6XNVSf-Cyi4zYN7bSLFckWnFhoVt19Qb2vHaiY15Ic",
+          "mode": "list",
+          "cachedResultName": "data_state",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n6XNVSf-Cyi4zYN7bSLFckWnFhoVt19Qb2vHaiY15Ic/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1482314660,
+          "mode": "list",
+          "cachedResultName": "register",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n6XNVSf-Cyi4zYN7bSLFckWnFhoVt19Qb2vHaiY15Ic/edit#gid=1482314660"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        -480
+      ],
+      "id": "1f6dffea-5e56-4951-b300-a91288998fb7",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0sZPcUWaKtyzBj4u",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all();\n\nrows.sort((a, b) =>\n    new Date(b.json.fecha_hora) - new Date(a.json.fecha_hora)\n);\n\nreturn rows.slice(0,3);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        -480
+      ],
+      "id": "ddfea505-787d-4fd1-93e5-6d277f772e48",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "sendTo": "boncer99@gmail.com",
+        "subject": "=Envio de información. {{  $('Webhook').first().json.query.estado_hoja }} ",
+        "message": "={{ $json.mensaje_humano }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        -176
+      ],
+      "id": "b199d6aa-15fa-43ef-93ea-e8cfbfc1ebf1",
+      "name": "Send a message",
+      "webhookId": "5cdae8a1-1408-4a04-80b9-0f9dff7a1d12",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ikCPdCexxrV2qArT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        -144
+      ],
+      "id": "a8910b6c-78ef-4d7e-a8ca-6d540bff9b8c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uDxLkAkeSWH9ZUcG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tiempo final\nconst tiempoFin = Date.now();\n// Tiempo inicial\nconst tiempoInicio =$('Code in JavaScript2').first().json.t_inicio\n// Latencia total\nconst latenciaTotal = tiempoFin - tiempoInicio;\n\n// Datos del Webhook\nconst estado = $(\"Webhook\").first().json.query.estado_hoja;\n\n// Datos del AI Agent\nconst ai = $(\"AI Agent\").first().json.output;\n\nlet limpio = ai\n    .replace(/```json/gi, \"\")\n    .replace(/```/g, \"\")\n    .trim();\n\nconst aiData = JSON.parse(limpio);\n\n// Datos del Google Sheets\nconst registros = $(\"Code in JavaScript1\").all().map(item => item.json);\n\n// Convertir registros a texto\nconst resumenRegistros = registros.map(r =>\n`• Estado: ${r.estado_hoja}\n  Confianza: ${r.confianza}\n  Temp: ${r.temperatura} °C\n  Humedad: ${r.humedad} %\n  Zona: ${r.zona_cultivo}\n  Fecha: ${r.fecha_hora}`\n).join(\"\\n\\n\");\n\n// Mensaje\nconst mensaje_js = `Estimado usuario,\nSe detectó la enfermedad:\n${estado}\nDescripción:\n${aiData.descripcion}\nTratamiento recomendado:\n${aiData.tratamiento}\nÚltimos registros del cultivo:\n${resumenRegistros}\n\nSe recomienda continuar monitoreando el cultivo y aplicar oportunamente las acciones descritas.\n\nSaludos cordiales.`;\nreturn [{\n    json:{\n        estado_hoja: estado,\n        descripcion: aiData.descripcion,\n        tratamiento: aiData.tratamiento,\n        ultimos_registros: registros,\n        mensaje_humano: mensaje_js,\n        // MÉTRICAS\n        latencia_total_ms: latenciaTotal,\n        latencia_total_s: (latenciaTotal/1000).toFixed(2)        \n      \n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -320
+      ],
+      "id": "ba63eed7-dbfd-47ed-bca2-e90975528520",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    ...$json,\n    t_inicio: Date.now()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -448
+      ],
+      "id": "9876c42c-f1ff-40c7-b89c-655c0d230da3",
+      "name": "Code in JavaScript2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "901553c5-0f47-46b3-b207-98d3eba4f28d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "823451087404fbb4b3975731c2cddff076eacab81fe6cb832a4245cdaad4e3ec"
+  },
+  "id": "Z8OJEZgCh0GXD9gd",
+  "tags": []
+}
