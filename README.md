@@ -82,38 +82,6 @@ flowchart LR
 
 ---
 
-## 🧰 Experimental setup
-
-| | PC | Raspberry Pi 5 |
-|---|---|---|
-| **Hardware** | Intel Core i5-14400F, NVIDIA RTX 4060 | Raspberry Pi 5, 16 GB RAM, aluminum heat sink with active fan |
-| **Software** | n8n + Ollama | n8n (Docker) + Ollama, Raspberry Pi OS 64-bit (Bookworm) |
-| **Models** | Gemini 2.0 · Llama 3.1 8B · Qwen2.5 7B (4-bit GGUF) | Gemini 2.0 · Llama 3.1 8B · Qwen2.5 7B (4-bit GGUF) |
-| **Clients** | Desktop · Web · Android | Desktop · Web · Android |
-
-Each configuration was tested with 100 valid requests per client and platform (300 per model and platform).
-
----
-
-## 📊 Key results (Raspberry Pi 5)
-
-| Model | Type | Avg. latency per request | Success rate | Avg. RAM | Avg. max. temp. |
-|---|---|---|---|---|---|
-| **Gemini 2.0** | ☁️ Cloud | **12.9 – 13.8 s** | **99.0 %** (297/300) | ~0.79 GB | ~48 °C |
-| **Llama 3.1 8B** | 🏠 Local | 655 – 730 s | 93.3 % (280/300) | ~7.62 GB | ~85 °C |
-| **Qwen2.5 7B** | 🏠 Local | 865 – 945 s | 90.0 % (270/300) | ~6.88 GB | ~82 °C |
-
-**Main findings**
-
-- ⚡ On a PC, the three models answer in about **2.6 to 3.3 s**; on the Raspberry Pi 5, the local 7–8B models need **11 to 16 minutes** per request.
-- 🧊 The cloud model keeps the Raspberry Pi cool and light, but **moving the n8n workflow from PC to Raspberry Pi 5 increases Gemini latency 4.9×** (2.62 s → 12.90 s): orchestration on the device is not negligible.
-- 🔥 With CPU-only inference, the local models saturate the CPU (96–98 %) and **exceed the 80 °C throttling threshold**, so a 7–8B model is **feasible but not practical for interactive use** on this hardware.
-- 🔬 Smaller or more aggressively optimized models, and fully offline workflows, are the natural next step.
-
-> The numbers above summarize the paper. See the article for the complete tables, methodology, failure taxonomy and limitations.
-
----
-
 ## 🚀 Quick start
 
 > File names inside each client folder may vary; adapt the commands to your copy.
@@ -137,27 +105,14 @@ Run n8n with Docker (official image `docker.n8n.io/n8nio/n8n`), open the editor 
 ```bash
 # Desktop client
 cd app_Desktop_tflite_clasifi
-pip install -r requirements.txt     # if provided
 python <script_name>.py
 
 # Web client (Flask)
 cd app_web_tflite_clasifi
-pip install -r requirements.txt     # if provided
 python <app_name>.py                # then open http://localhost:5000
 ```
 
 For the **Android client**, open [`app_android`](./app_android) in Android Studio and set the webhook URL of your n8n instance (use the machine's LAN IP, not `localhost`).
-
-> 🔐 **Security:** never commit API keys or tokens. Configure credentials in n8n and keep any secret out of the JSON files and the client source code.
-
----
-
-## 🔭 Scope and limitations
-
-- Only **response latency, resource usage, temperature and reliability** were evaluated. The **quality of the generated answers was not formally evaluated** (content was only reviewed against the technical documents).
-- Only **7–8B models with 4-bit quantization** were tested on the Raspberry Pi 5. Smaller models (1B–3B) are proposed as future work.
-- RAM and CPU were measured with different tools per platform (`psutil` on PC, `top` on Raspberry Pi 5).
-- Energy per query, cold/warm runs, tokens per second and statistical tests are future work.
 
 ---
 
